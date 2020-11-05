@@ -1,1 +1,1 @@
-sudo mount -t vboxsf -o uid=$UID,gid=$(id -g) /Desktop/hw
+sudo mount -t vboxsf -o uid=$UID,gid=$(id -g) hw ~/Desktop/hw
