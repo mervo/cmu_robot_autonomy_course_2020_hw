@@ -23,10 +23,13 @@ class Locobot:
 		'''Note: you will get this from the URDF (interbotix_locobot_description.urdf).
 		For example, in the urdf under each joint you will see: (<axis xyz="0 1 0"/>)
 		'''
-		self.axis= ([[0,0,0,0],
-					 [0,0,1,0],
-					 [0,1,0,0.],
-					 [0,1,0,0]])
+		self.axis= ([[0,0,1],
+					 [0,1,0],
+					 [0,1,0],
+					 [0,1,0],
+					 [-1,0,0],
+					 [0,1,0]
+					 ])
 
 		#Set base coordinate frame as identity - NOTE: don't change
 		self.Tbase= [[1,0,0,0],
@@ -76,13 +79,8 @@ class Locobot:
 		for i in range(len(self.Tcurr) - 1):
 			# Position of end effector - Position of ith joint
 			p = self.Tcurr[-1][0:3, 3] - self.Tcurr[i][0:3, 3] # From all 3 elements, return index 3
-			# TODO not sure how to use self.axis here
-			a = self.Tcurr[i][0:3,2] # Define axis to use as joint axis
-			# print(self.axis)
-			# print("HERE")
-			# print(self.Tcurr)
-			# print(a)
-			# print("END")
+			a = self.axis[i] # Define axis to use as joint axis
+			# a = self.Tcurr[i][0:3, 2]  # Lecture, about Z axis
 			self.J[0:3,i] = np.cross(a,p)
 			self.J[3:7, i] = a
 		return self.Tcurr, self.J
