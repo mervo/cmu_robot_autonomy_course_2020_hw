@@ -99,33 +99,35 @@ class Locobot:
         self.ForwardKin(ang)
 
         Err = [0, 0, 0, 0, 0, 0]  # error in position and orientation, initialized to 0
-        for s in range(10000):
-            # TODO: Compute rotation error
+        for s in range(1000):
+            print(f'Step: {s}')
+            # TODO: Compute rotation error (radian)
             rErrR = np.matmul(TGoal[0:3, 0:3], np.transpose(self.Tcurr[-1][0:3, 0:3]))  # R_err = R_goal * RT_ECurr
             rErrAxis, rErrAng = rt.R2axisang(rErrR)  # Convert to axis angle form
+            print(f'Pos Error(m): {rErrAxis}, Rotation Error(rad): {rErrAng}')
 
             # Limit rotation angle
-            if rErrAng > 0.1:
-                rErrAng = 0.1
+            if rErrAng > 0.1:  # 0.1 rad ~ 5.7 deg
+                rErrAng = np.pi / 180  # 1 deg
             if rErrAng < -0.1:
-                rErrAng = -0.1
+                rErrAng = - np.pi / 180
 
             rErr = [rErrAxis[0] * rErrAng, rErrAxis[1] * rErrAng, rErrAxis[2] * rErrAng]
 
-            # TODO: Compute position error
+            # TODO: Compute position error (meter)
             # Compute and limit translation error
             xErr = TGoal[0:3, 3] - self.Tcurr[-1][0:3, 3]
             if np.linalg.norm(xErr) > 0.01:
                 xErr = xErr * 0.01 / np.linalg.norm(xErr)
 
-            # TODO: Update joint angles with pseudo inverse
+            # TODO: Update joint angles with Jacobian Pseudo-Inverse Approach
             Err[0:3] = xErr
             Err[3:6] = rErr
 
-            self.q[0:6] = self.q[0:6] + np.matmul(
+            self.q[0:-1] = self.q[0:-1] + np.matmul(
                 np.matmul(np.transpose(self.J), np.linalg.inv(np.matmul(self.J, np.transpose(self.J)))), Err)
             # TODO: Recompute forward kinematics(and loop) for new angles
-            self.ForwardKin(self.q[0:6])
+            self.ForwardKin(self.q[0:-1])
 
         return self.q[0:-1], Err
 
@@ -150,7 +152,7 @@ class Locobot:
                         [self.Tcurr[i - 1][2, 3], self.Tcurr[i][2, 3]], c='k')
 
         # Format axes and display
-        ax.axis('equal')
+        ax.axis('auto')
         ax.set(xlim=(-1., 1.), ylim=(-1., 1.), zlim=(0, 1.))
         ax.set_xlabel('X-axis')
         ax.set_ylabel('Y-axis')

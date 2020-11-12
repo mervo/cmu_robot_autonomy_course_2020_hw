@@ -32,6 +32,7 @@ for joint_target in joint_targets:
   print('computed FK ee rotation', rot_ee)
 
 # Compute inverse kinematics
+print('IK')
 qInit=[0.0,-0.5,1.0,0.5,0.5] # initial joint positions
 HGoal= np.array([[1,0,0,0.5], # target EE pose
 		 [0,1,0,0.0],
