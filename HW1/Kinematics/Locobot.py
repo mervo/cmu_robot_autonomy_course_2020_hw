@@ -99,7 +99,7 @@ class Locobot:
         self.ForwardKin(ang)
 
         Err = [0, 0, 0, 0, 0, 0]  # error in position and orientation, initialized to 0
-        for s in range(1000):
+        for s in range(2000):
             print(f'Step: {s}')
             # TODO: Compute rotation error (radian)
             rErrR = np.matmul(TGoal[0:3, 0:3], np.transpose(self.Tcurr[-1][0:3, 0:3]))  # R_err = R_goal * RT_ECurr
@@ -108,9 +108,9 @@ class Locobot:
 
             # Limit rotation angle
             if rErrAng > 0.1:  # 0.1 rad ~ 5.7 deg
-                rErrAng = np.pi / 180  # 1 deg
+                rErrAng = 0.1 * np.pi / 180  # 0.1 deg
             if rErrAng < -0.1:
-                rErrAng = - np.pi / 180
+                rErrAng = - 0.1 * np.pi / 180
 
             rErr = [rErrAxis[0] * rErrAng, rErrAxis[1] * rErrAng, rErrAxis[2] * rErrAng]
 
@@ -120,12 +120,21 @@ class Locobot:
             if np.linalg.norm(xErr) > 0.01:
                 xErr = xErr * 0.01 / np.linalg.norm(xErr)
 
-            # TODO: Update joint angles with Jacobian Pseudo-Inverse Approach
             Err[0:3] = xErr
             Err[3:6] = rErr
+            # TODO: Update joint angles with Jacobian Pseudo-Inverse Approach J^T(JJ^T)^-1 S43
+            # Jacobian Pseudo-Inverse cannot be computed @ Step 4 even after reducing step sizes, switching to Jacobian Transpose
+            # Pos Error(m): [0.41623425993423047, -0.8802044262027227, -0.22801142285012657], Rotation Error(rad): 1.1072814432454838
+            # self.q[0:-1] = self.q[0:-1] + np.matmul(
+            #     np.matmul(np.transpose(self.J), np.linalg.inv(np.matmul(self.J, np.transpose(self.J)))), Err)
 
-            self.q[0:-1] = self.q[0:-1] + np.matmul(
-                np.matmul(np.transpose(self.J), np.linalg.inv(np.matmul(self.J, np.transpose(self.J)))), Err)
+            # TODO: Update joint angles with Jacobian Transpose Approach alpha * J^T S33
+            # Step: 1000
+            # Pos Error(m): [0.7712178398298731, -0.6167892348244101, -0.15746137092272164], Rotation Error(rad): 0.767704823590883
+            # Step: 2000
+            # Pos Error(m): [0.8471681122638188, -0.507206807657038, -0.1582638424584537], Rotation Error(rad): 0.8643796036834195
+            self.q[0:-1] = self.q[0:-1] + 0.1 * np.matmul(np.transpose(self.J), Err)
+
             # TODO: Recompute forward kinematics(and loop) for new angles
             self.ForwardKin(self.q[0:-1])
 
