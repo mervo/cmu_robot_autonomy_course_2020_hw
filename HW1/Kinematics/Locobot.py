@@ -99,7 +99,7 @@ class Locobot:
         self.ForwardKin(ang)
 
         Err = [0, 0, 0, 0, 0, 0]  # error in position and orientation, initialized to 0
-        for s in range(2000):
+        for s in range(1000):
             print(f'Step: {s}')
             # TODO: Compute rotation error (radian)
             rErrR = np.matmul(TGoal[0:3, 0:3], np.transpose(self.Tcurr[-1][0:3, 0:3]))  # R_err = R_goal * RT_ECurr
@@ -123,16 +123,20 @@ class Locobot:
             Err[0:3] = xErr
             Err[3:6] = rErr
             # TODO: Update joint angles with Jacobian Pseudo-Inverse Approach J^T(JJ^T)^-1 S43
-            # Jacobian Pseudo-Inverse cannot be computed @ Step 4 even after reducing step sizes, switching to Jacobian Transpose
+            # Jacobian Pseudo-Inverse cannot be computed @ Step 4 even after reducing step sizes multiple times
             # Pos Error(m): [0.41623425993423047, -0.8802044262027227, -0.22801142285012657], Rotation Error(rad): 1.1072814432454838
             # self.q[0:-1] = self.q[0:-1] + np.matmul(
             #     np.matmul(np.transpose(self.J), np.linalg.inv(np.matmul(self.J, np.transpose(self.J)))), Err)
 
+            # Switching to Jacobian Transpose Method
+
             # TODO: Update joint angles with Jacobian Transpose Approach alpha * J^T S33
             # Step: 1000
             # Pos Error(m): [0.7712178398298731, -0.6167892348244101, -0.15746137092272164], Rotation Error(rad): 0.767704823590883
+            # computed IK angles[-0.02715018929923225, -0.5629399578355448, 0.7531900187871879, 0.290465299712724, 0.610573795437234]
             # Step: 2000
             # Pos Error(m): [0.8471681122638188, -0.507206807657038, -0.1582638424584537], Rotation Error(rad): 0.8643796036834195
+            # computed IK angles [-0.03371279976628066, -0.45473591137218317, 0.7042210161901095, 0.1981941678980578, 0.7528826325651012]
             self.q[0:-1] = self.q[0:-1] + 0.1 * np.matmul(np.transpose(self.J), Err)
 
             # TODO: Recompute forward kinematics(and loop) for new angles

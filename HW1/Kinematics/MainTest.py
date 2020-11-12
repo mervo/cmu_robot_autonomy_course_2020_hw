@@ -41,5 +41,5 @@ HGoal= np.array([[1,0,0,0.5], # target EE pose
 
 q,Err=mybot.IterInvKin(qInit, HGoal)
 print('error', Err)
-print('compute IK angles', q)
+print('computed IK angles', q)
 # mybot.PlotSkeleton(q)
