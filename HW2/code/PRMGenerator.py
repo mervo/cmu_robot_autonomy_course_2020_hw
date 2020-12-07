@@ -68,6 +68,9 @@ for i in range(num_samples):
                     prmEdges[-1].append(j)
                     prmEdges[j].append(len(prmVertices) - 1)
 
+print(prmVertices)
+print(prmEdges)
+
 # Save the PRM
 f = open("myPRM.p", 'wb')
 pickle.dump(prmVertices, f)

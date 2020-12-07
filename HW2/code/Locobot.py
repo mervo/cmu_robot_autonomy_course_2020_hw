@@ -184,6 +184,12 @@ class Locobot:
         # implement random sampling of robot joint configurations
         q = []
 
+        assert len(self.qmax) == len(self.qmin)
+
+        for i in range(len(self.qmax)):
+            q_1 = np.random.uniform(self.qmin[i], self.qmax[i])
+            q.append(q_1)
+
         return q
 
     def CompCollisionBlockPoints(self, ang):
