@@ -71,13 +71,19 @@ def main(args):
     while prevstep:
         plan.insert(0, prevstep)
         prevstep = parent[plan[0]]
-    print
-    "Plan: ", plan
+    print(f'Plan: {plan}')
     MyPlan = []
     MyPlan.append(qInit)
     for i in range(len(plan)):
         MyPlan.append(prmVertices[plan[i]])
     MyPlan.append(qGoal)
+
+    print(f'MyPlan: {MyPlan}')
+
+    '''
+    Plan: [15, 289]
+    MyPlan: [[-1.3962634015954636, 0.0, 0.0, 0.0, 0.0], [-1.3533591874164546, 0.9979644317322929, 0.014452723097246434, -0.3075413562005529, 0.8365948687353557], [-1.4413963425702467, 0.9907798451167731, -0.32952706501866236, 1.458911725031603, 1.2879131193954783], [0.0, 1.0471975511965976, -1.3089969389957472, -1.3089969389957472, 0.0]]
+    '''
 
     if args.use_pyrobot:
         # Vizualize your plan in PyRobot
