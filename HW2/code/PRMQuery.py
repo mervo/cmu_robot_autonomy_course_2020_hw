@@ -16,9 +16,10 @@ import RobotUtil as rt
 
 # NOTE: Please set a random seed for your random joint generator so we can get the same path as you if we run your code!
 random.seed(13)
-
-
 # np.random.seed(0)
+
+from scipy.interpolate import interp1d
+
 
 def main(args):
     # Initialize robot object
@@ -81,9 +82,20 @@ def main(args):
     print(f'MyPlan: {MyPlan}')
 
     '''
-    Plan: [15, 289]
-    MyPlan: [[-1.3962634015954636, 0.0, 0.0, 0.0, 0.0], [-1.3533591874164546, 0.9979644317322929, 0.014452723097246434, -0.3075413562005529, 0.8365948687353557], [-1.4413963425702467, 0.9907798451167731, -0.32952706501866236, 1.458911725031603, 1.2879131193954783], [0.0, 1.0471975511965976, -1.3089969389957472, -1.3089969389957472, 0.0]]
+    Plan: [147, 125]
+    MyPlan: [[-1.3962634015954636, 0.0, 0.0, 0.0, 0.0], [-1.3566306335181975, -1.3354437590531207, 0.8897507663956457, 0.686939949324241, 0.14910347862496454], [-1.4822710586634962, -1.2024578559469534, 1.202210699663267, 1.5051140054814043, -0.7413978130694621], [0.0, 1.0471975511965976, -1.3089969389957472, -1.3089969389957472, 0.0]]
     '''
+
+    # Interpolate for smooth trajectory
+    num_steps_between = 10
+    MyPlanInterpolated = []
+    for i in range(len(MyPlan) - 1):
+        linfit = interp1d([0, num_steps_between - 1], np.vstack([MyPlan[i], MyPlan[i + 1]]), axis=0)
+        for j in range(num_steps_between):
+            MyPlanInterpolated.append(list(linfit(j)))
+
+    print(f'MyPlanInterpolated: {MyPlanInterpolated}')
+    MyPlan = MyPlanInterpolated
 
     if args.use_pyrobot:
         # Vizualize your plan in PyRobot
@@ -99,6 +111,7 @@ def main(args):
 
     else:
         # Visualize your Plan in matplotlib
+        return
         for q in MyPlan:
             mybot.PlotCollisionBlockPoints(q, pointsObs)
 

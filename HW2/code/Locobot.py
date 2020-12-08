@@ -193,6 +193,11 @@ class Locobot:
         return q
 
     def CompCollisionBlockPoints(self, ang):
+        '''
+        Get robot's collision boxes
+        :param ang:
+        :return:
+        '''
         # Use your FK implementation here to compute collision boxes for the robot arm
         self.ForwardKin(ang)
 
@@ -203,6 +208,11 @@ class Locobot:
 
     def DetectCollision(self, ang, pointsObs, axesObs):
         # implement collision detection using CompCollisionBlockPoints() and rt.CheckBoxBoxCollision()
+        self.CompCollisionBlockPoints(ang)
+
+        for i in range(len(self.Cdesc)):
+            if rt.CheckBoxBoxCollision(self.Cpoints[i], self.Caxes[i], pointsObs[i], axesObs[i]):
+                return True
 
         return False
 
