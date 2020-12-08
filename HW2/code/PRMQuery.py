@@ -10,7 +10,7 @@ import pickle
 import matplotlib.pyplot as plt
 import random
 
-from pyrobot import Robot
+# from pyrobot import Robot
 import Locobot
 import RobotUtil as rt
 
@@ -19,6 +19,7 @@ random.seed(13)
 # np.random.seed(0)
 
 from scipy.interpolate import interp1d
+import seaborn as sns
 
 
 def main(args):
@@ -111,9 +112,23 @@ def main(args):
 
     else:
         # Visualize your Plan in matplotlib
-        return
-        for q in MyPlan:
-            mybot.PlotCollisionBlockPoints(q, pointsObs)
+        pass
+        # for q in MyPlan:
+        #     mybot.PlotCollisionBlockPoints(q, pointsObs)
+
+    # Plot time history plot for joints 1 through 5 that show the path produced by your PRM
+    joints = list(zip(*MyPlanInterpolated))
+    x = np.linspace(1, len(joints[0]), len(joints[0]))
+    sns.set()
+    plt.xlabel("Time Step")
+    plt.ylabel("Joint Configuration (rad)")
+    plt.title("Time History Plot of Joints")
+    joint = 0
+    for y in joints:
+        plt.plot(x, y, label=f'Joint {joint}')
+        joint += 1
+    plt.legend()
+    plt.show()
 
 
 if __name__ == "__main__":
