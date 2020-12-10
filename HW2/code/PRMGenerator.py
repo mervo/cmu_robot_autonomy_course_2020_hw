@@ -48,7 +48,7 @@ prmVertices = []
 prmEdges = []
 
 start = time.time()
-num_samples = 2500  # you might need to change this value
+num_samples = 1000  # you might need to change this value
 radius_threshold = 2.0
 
 for i in range(num_samples):

@@ -210,9 +210,10 @@ class Locobot:
         # implement collision detection using CompCollisionBlockPoints() and rt.CheckBoxBoxCollision()
         self.CompCollisionBlockPoints(ang)
 
-        for i in range(len(self.Cdesc)):
-            if rt.CheckBoxBoxCollision(self.Cpoints[i], self.Caxes[i], pointsObs[i], axesObs[i]):
-                return True
+        for i in range(len(self.Cpoints)):
+            for j in range(len(pointsObs)):
+                if rt.CheckBoxBoxCollision(self.Cpoints[i], self.Caxes[i], pointsObs[j], axesObs[j]):
+                    return True
 
         return False
 
