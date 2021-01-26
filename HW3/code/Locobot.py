@@ -136,11 +136,11 @@ class Locobot:
 
         Err = [0, 0, 0, 0, 0, 0]  # error in position and orientation, initialized to 0
         for s in range(1000):
-            print(f'Step: {s}')
+            # print(f'Step: {s}')
             # TODO: Compute rotation error (radian)
             rErrR = np.matmul(TGoal[0:3, 0:3], np.transpose(self.Tcurr[-1][0:3, 0:3]))  # R_err = R_goal * RT_ECurr
             rErrAxis, rErrAng = rt.R2axisang(rErrR)  # Convert to axis angle form
-            print(f'Pos Error(m): {rErrAxis}, Rotation Error(rad): {rErrAng}')
+            # print(f'Pos Error(m): {rErrAxis}, Rotation Error(rad): {rErrAng}')
 
             # Limit rotation angle
             if rErrAng > 0.1:  # 0.1 rad ~ 5.7 deg
