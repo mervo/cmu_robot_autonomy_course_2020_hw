@@ -25,9 +25,8 @@ def ComputeNextState(state, effect):
     return newstate
 
 
-Predicates = ['InHallway', 'InKitchen', 'InOffice', 'InLivingRoom', 'InGarden', 'InPantry', 'Chopped', 'OnRobot']
-
 Objects = ['Robot', 'Strawberry', 'Lemon', 'Paper', 'Knife']
+Predicates = ['InHallway', 'InKitchen', 'InOffice', 'InLivingRoom', 'InGarden', 'InPantry', 'Chopped', 'OnRobot']
 
 nrPredicates = len(Predicates)
 nrObjects = len(Objects)
@@ -103,9 +102,10 @@ for i in range(1, 5, 1):
     Precond = np.zeros([nrObjects, nrPredicates])
     Precond[0][i] = -1  # Robot not in the ith room
     Precond[0][1] = 1  # Robot in the kitchen
+    Precond[4][1] = 1  # Knife in the kitchen
+
     for j in range(1, 2, 1):  # Go through fruits
         Precond[j][1] = 1  # Fruit in kitchen
-        Precond[j][-1] = -1  # Fruit not on robot ? Chop on or off the robot?
         Precond[j][6] = -1  # Fruit is not chopped
 
         Effect = np.zeros([nrObjects, nrPredicates])
