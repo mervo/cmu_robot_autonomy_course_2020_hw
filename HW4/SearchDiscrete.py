@@ -163,6 +163,7 @@ GoalState[4][1] = 1  # Knife is in the kitchen
 np.random.seed(13)
 
 # Search for Solution
+# Initialize Queue with initial state
 vertices = []
 parent = []
 action = []
@@ -178,11 +179,32 @@ cost2come.append(0)
 
 FoundPath = False
 # Add your code here to generate path
+# Small problem use dijkstra search as more comprehensive for shortest path
+while len(Queue) > 0:
+    # Get Highest Priority
+    P = np.array([cost2come[q] for q in Queue])
+    id = P.argmin()  # Select min cost2come node to expand
 
+    x = Queue[id]
+    del Queue[id]
 
-# Once you've found a path, use the code below to print out your plan
-print
-"\n FoundPath: ", FoundPath
+    if CheckCondition(vertices[x], GoalState):  # Check goal
+        FoundPath = True
+        # Once you've found a path, use the code below to print out your plan
+        print("\n FoundPath: ", FoundPath)
+        break
+
+    for i, action_pre in enumerate(ActionPre):  # Check each action precondition + visited
+        state = vertices[x]
+        action_eff = ActionEff[i]
+        if CheckCondition(state, action_pre):
+            if not CheckVisited(ComputeNextState(state, action_eff), vertices):
+                # Add new node to graph and queue
+                vertices.append(ComputeNextState(state, action_eff))
+                action.append(i)
+                parent.append(x)
+                cost2come.append(cost2come[x] + 1)
+                Queue.append(len(vertices) - 1)
 
 Plan = []
 if FoundPath:
@@ -190,6 +212,22 @@ if FoundPath:
         Plan.insert(0, action[x])
         x = parent[x]
 
-for i in range(len(Plan)):
-    print
-    ActionDesc[Plan[i]]
+    for i in range(len(Plan)):
+        print(ActionDesc[Plan[i]])
+
+'''
+Move to InHallway from InKitchen
+Move to InOffice from InHallway
+Pick up Knife from InOffice
+Move to InHallway from InOffice
+Move to InLivingRoom from InHallway
+Pick up Lemon from InLivingRoom
+Move to InHallway from InLivingRoom
+Move to InGarden from InHallway
+Pick up Strawberry from InGarden
+Place Lemon at InGarden
+Move to InHallway from InGarden
+Move to InKitchen from InHallway
+Place Strawberry at InKitchen
+Place Knife at InKitchen
+'''
