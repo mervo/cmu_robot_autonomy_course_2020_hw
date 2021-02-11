@@ -116,7 +116,7 @@ for i in range(1, 5, 1):
         ActionDesc.append(f'Fruit {Objects[j]} is chopped InKitchen.')
 
 ###Pickup object
-for i in range(1, 5, 1):
+for i in range(1, 6, 1):
     for j in range(1, 5, 1):
         Precond = np.zeros([nrObjects, nrPredicates])
         Precond[0][i] = 1  # Robot in ith room
@@ -132,7 +132,7 @@ for i in range(1, 5, 1):
         ActionDesc.append("Pick up " + Objects[j] + " from " + Predicates[i])
 
 ###Place object
-for i in range(1, 5, 1):
+for i in range(1, 6, 1):
     for j in range(1, 5, 1):
         Precond = np.zeros([nrObjects, nrPredicates])
         Precond[0][i] = 1  # Robot in ith room
@@ -150,7 +150,7 @@ for i in range(1, 5, 1):
 InitialState = -1 * np.ones([nrObjects, nrPredicates])
 InitialState[0][1] = 1  # Robot is in the kitchen
 InitialState[1][4] = 1  # Strawberry is in the garden
-InitialState[2][3] = 1  # Lemon is in the pantry
+InitialState[2][5] = 1  # Lemon is in the pantry
 InitialState[3][2] = 1  # Paper is in the office
 InitialState[4][2] = 1  # Knife is in the office
 
@@ -158,7 +158,7 @@ GoalState = np.zeros([nrObjects, nrPredicates])
 GoalState[0][1] = 1  # Robot is in the kitchen
 GoalState[1][1] = 1  # Strawberry is in the kitchen
 GoalState[2][4] = 1  # Lemon is in the Garden
-GoalState[4][1] = 1  # Knife is in the kitchen
+GoalState[1][6] = 1  # Strawberry is chopped
 
 np.random.seed(13)
 
@@ -216,13 +216,13 @@ if FoundPath:
         print(ActionDesc[Plan[i]])
 
 '''
+Move to InPantry from InKitchen
+Pick up Lemon from InPantry
+Move to InKitchen from InPantry
 Move to InHallway from InKitchen
 Move to InOffice from InHallway
 Pick up Knife from InOffice
 Move to InHallway from InOffice
-Move to InLivingRoom from InHallway
-Pick up Lemon from InLivingRoom
-Move to InHallway from InLivingRoom
 Move to InGarden from InHallway
 Pick up Strawberry from InGarden
 Place Lemon at InGarden
@@ -230,4 +230,5 @@ Move to InHallway from InGarden
 Move to InKitchen from InHallway
 Place Strawberry at InKitchen
 Place Knife at InKitchen
+Fruit Strawberry is chopped InKitchen.
 '''
