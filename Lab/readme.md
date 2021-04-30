@@ -1,4 +1,4 @@
-1. connect to DDEV wifi:DEVw1f1@DSTA 
+1. connect to DDEV wifi
 2. move the SSL cert `sudo cp SSL-Trust-2018.crt /usr/local/share/ca-certificates/`
 3. `sudo update-ca-certificates` 
 login with mobi at https://10.255.255.254:6082/php/uid.php?vsys=1&rule=5&url=http://detectportal.firefox.com%2fsuccess.txt 
